@@ -30,15 +30,6 @@ def plot_degree_distribution(G):
 
     st.plotly_chart(fig)
 
-
-    clustering_coeffs = nx.clustering(G)
-    for node in selected_nodes:
-        st.write(f"Node: {node}")
-        if node in clustering_coeffs:
-            st.write(f"Clustering Coefficient: {clustering_coeffs[node]}")
-        else:
-            st.write("Node not found in the graph.")
-
 def local_clustering_coefficient(G):
     clustering_coeffs = nx.clustering(G)
     return clustering_coeffs
