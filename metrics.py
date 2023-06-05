@@ -27,7 +27,6 @@ def plot_degree_distribution(G):
             bargap=0.1
         )
     )
-
     st.plotly_chart(fig)
 
 def local_clustering_coefficient(G):
