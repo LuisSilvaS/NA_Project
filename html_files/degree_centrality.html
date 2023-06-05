@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": "Aemon", "label": "Aemon", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Grenn", "label": "Grenn", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Samwell", "label": "Samwell", "shape": "dot", "title": "Degree Centrality: 0.14150943396226415"}, {"color": "#97c2fc", "id": "Aerys", "label": "Aerys", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Jaime", "label": "Jaime", "shape": "dot", "title": "Degree Centrality: 0.22641509433962265"}, {"color": "#97c2fc", "id": "Robert", "label": "Robert", "shape": "dot", "title": "Degree Centrality: 0.16981132075471697"}, {"color": "#97c2fc", "id": "Tyrion", "label": "Tyrion", "shape": "dot", "title": "Degree Centrality: 0.33962264150943394"}, {"color": "#97c2fc", "id": "Tywin", "label": "Tywin", "shape": "dot", "title": "Degree Centrality: 0.20754716981132074"}, {"color": "#97c2fc", "id": "Alliser", "label": "Alliser", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Mance", "label": "Mance", "shape": "dot", "title": "Degree Centrality: 0.11320754716981132"}, {"color": "#97c2fc", "id": "Amory", "label": "Amory", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Oberyn", "label": "Oberyn", "shape": "dot", "title": "Degree Centrality: 0.0660377358490566"}, {"color": "#97c2fc", "id": "Arya", "label": "Arya", "shape": "dot", "title": "Degree Centrality: 0.1792452830188679"}, {"color": "#97c2fc", "id": "Anguy", "label": "Anguy", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Beric", "label": "Beric", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Bran", "label": "Bran", "shape": "dot", "title": "Degree Centrality: 0.1320754716981132"}, {"color": "#97c2fc", "id": "Brynden", "label": "Brynden", "shape": "dot", "title": "Degree Centrality: 0.09433962264150943"}, {"color": "#97c2fc", "id": "Cersei", "label": "Cersei", "shape": "dot", "title": "Degree Centrality: 0.18867924528301885"}, {"color": "#97c2fc", "id": "Gendry", "label": "Gendry", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Gregor", "label": "Gregor", "shape": "dot", "title": "Degree Centrality: 0.11320754716981132"}, {"color": "#97c2fc", "id": "Joffrey", "label": "Joffrey", "shape": "dot", "title": "Degree Centrality: 0.16981132075471697"}, {"color": "#97c2fc", "id": "Jon", "label": "Jon", "shape": "dot", "title": "Degree Centrality: 0.24528301886792453"}, {"color": "#97c2fc", "id": "Rickon", "label": "Rickon", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Roose", "label": "Roose", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Sandor", "label": "Sandor", "shape": "dot", "title": "Degree Centrality: 0.12264150943396226"}, {"color": "#97c2fc", "id": "Thoros", "label": "Thoros", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Balon", "label": "Balon", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Loras", "label": "Loras", "shape": "dot", "title": "Degree Centrality: 0.08490566037735849"}, {"color": "#97c2fc", "id": "Belwas", "label": "Belwas", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Barristan", "label": "Barristan", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Illyrio", "label": "Illyrio", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Hodor", "label": "Hodor", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Jojen", "label": "Jojen", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Luwin", "label": "Luwin", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Meera", "label": "Meera", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Nan", "label": "Nan", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Theon", "label": "Theon", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Brienne", "label": "Brienne", "shape": "dot", "title": "Degree Centrality: 0.0660377358490566"}, {"color": "#97c2fc", "id": "Bronn", "label": "Bronn", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Podrick", "label": "Podrick", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Lothar", "label": "Lothar", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Walder", "label": "Walder", "shape": "dot", "title": "Degree Centrality: 0.07547169811320754"}, {"color": "#97c2fc", "id": "Catelyn", "label": "Catelyn", "shape": "dot", "title": "Degree Centrality: 0.16981132075471697"}, {"color": "#97c2fc", "id": "Edmure", "label": "Edmure", "shape": "dot", "title": "Degree Centrality: 0.07547169811320754"}, {"color": "#97c2fc", "id": "Hoster", "label": "Hoster", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Jeyne", "label": "Jeyne", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Lysa", "label": "Lysa", "shape": "dot", "title": "Degree Centrality: 0.09433962264150943"}, {"color": "#97c2fc", "id": "Petyr", "label": "Petyr", "shape": "dot", "title": "Degree Centrality: 0.0660377358490566"}, {"color": "#97c2fc", "id": "Robb", "label": "Robb", "shape": "dot", "title": "Degree Centrality: 0.2358490566037736"}, {"color": "#97c2fc", "id": "Roslin", "label": "Roslin", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Sansa", "label": "Sansa", "shape": "dot", "title": "Degree Centrality: 0.24528301886792453"}, {"color": "#97c2fc", "id": "Stannis", "label": "Stannis", "shape": "dot", "title": "Degree Centrality: 0.1320754716981132"}, {"color": "#97c2fc", "id": "Elia", "label": "Elia", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Ilyn", "label": "Ilyn", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Meryn", "label": "Meryn", "shape": "dot", "title": "Degree Centrality: 0.0660377358490566"}, {"color": "#97c2fc", "id": "Pycelle", "label": "Pycelle", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Shae", "label": "Shae", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Varys", "label": "Varys", "shape": "dot", "title": "Degree Centrality: 0.0660377358490566"}, {"color": "#97c2fc", "id": "Craster", "label": "Craster", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Karl", "label": "Karl", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Daario", "label": "Daario", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Drogo", "label": "Drogo", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Irri", "label": "Irri", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Daenerys", "label": "Daenerys", "shape": "dot", "title": "Degree Centrality: 0.1320754716981132"}, {"color": "#97c2fc", "id": "Aegon", "label": "Aegon", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Jorah", "label": "Jorah", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Kraznys", "label": "Kraznys", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Missandei", "label": "Missandei", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Rakharo", "label": "Rakharo", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Rhaegar", "label": "Rhaegar", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Viserys", "label": "Viserys", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Worm", "label": "Worm", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Davos", "label": "Davos", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Cressen", "label": "Cressen", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Salladhor", "label": "Salladhor", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Eddard", "label": "Eddard", "shape": "dot", "title": "Degree Centrality: 0.11320754716981132"}, {"color": "#97c2fc", "id": "Eddison", "label": "Eddison", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Gilly", "label": "Gilly", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Qyburn", "label": "Qyburn", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Renly", "label": "Renly", "shape": "dot", "title": "Degree Centrality: 0.07547169811320754"}, {"color": "#97c2fc", "id": "Tommen", "label": "Tommen", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Janos", "label": "Janos", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Bowen", "label": "Bowen", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Kevan", "label": "Kevan", "shape": "dot", "title": "Degree Centrality: 0.05660377358490566"}, {"color": "#97c2fc", "id": "Margaery", "label": "Margaery", "shape": "dot", "title": "Degree Centrality: 0.0660377358490566"}, {"color": "#97c2fc", "id": "Myrcella", "label": "Myrcella", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Dalla", "label": "Dalla", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Melisandre", "label": "Melisandre", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Orell", "label": "Orell", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Qhorin", "label": "Qhorin", "shape": "dot", "title": "Degree Centrality: 0.04716981132075471"}, {"color": "#97c2fc", "id": "Rattleshirt", "label": "Rattleshirt", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Styr", "label": "Styr", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Val", "label": "Val", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Ygritte", "label": "Ygritte", "shape": "dot", "title": "Degree Centrality: 0.03773584905660377"}, {"color": "#97c2fc", "id": "Jon Arryn", "label": "Jon Arryn", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Lancel", "label": "Lancel", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Olenna", "label": "Olenna", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Marillion", "label": "Marillion", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Robert Arryn", "label": "Robert Arryn", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Ellaria", "label": "Ellaria", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Mace", "label": "Mace", "shape": "dot", "title": "Degree Centrality: 0.02830188679245283"}, {"color": "#97c2fc", "id": "Rickard", "label": "Rickard", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Ramsay", "label": "Ramsay", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Chataya", "label": "Chataya", "shape": "dot", "title": "Degree Centrality: 0.018867924528301886"}, {"color": "#97c2fc", "id": "Shireen", "label": "Shireen", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Doran", "label": "Doran", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}, {"color": "#97c2fc", "id": "Walton", "label": "Walton", "shape": "dot", "title": "Degree Centrality: 0.009433962264150943"}]);
+                  edges = new vis.DataSet([{"from": "Aemon", "to": "Grenn"}, {"from": "Aemon", "to": "Samwell"}, {"from": "Aemon", "to": "Jon"}, {"from": "Aemon", "to": "Robert"}, {"from": "Aemon", "to": "Stannis"}, {"from": "Grenn", "to": "Eddison"}, {"from": "Grenn", "to": "Jon"}, {"from": "Grenn", "to": "Samwell"}, {"from": "Samwell", "to": "Bran"}, {"from": "Samwell", "to": "Jojen"}, {"from": "Samwell", "to": "Jon"}, {"from": "Samwell", "to": "Meera"}, {"from": "Samwell", "to": "Melisandre"}, {"from": "Samwell", "to": "Bowen"}, {"from": "Samwell", "to": "Craster"}, {"from": "Samwell", "to": "Eddison"}, {"from": "Samwell", "to": "Gilly"}, {"from": "Samwell", "to": "Janos"}, {"from": "Samwell", "to": "Mance"}, {"from": "Samwell", "to": "Qhorin"}, {"from": "Samwell", "to": "Stannis"}, {"from": "Aerys", "to": "Jaime"}, {"from": "Aerys", "to": "Robert"}, {"from": "Aerys", "to": "Tyrion"}, {"from": "Aerys", "to": "Tywin"}, {"from": "Jaime", "to": "Arya"}, {"from": "Jaime", "to": "Catelyn"}, {"from": "Jaime", "to": "Cersei"}, {"from": "Jaime", "to": "Eddard"}, {"from": "Jaime", "to": "Balon"}, {"from": "Jaime", "to": "Barristan"}, {"from": "Jaime", "to": "Brienne"}, {"from": "Jaime", "to": "Edmure"}, {"from": "Jaime", "to": "Elia"}, {"from": "Jaime", "to": "Gregor"}, {"from": "Jaime", "to": "Joffrey"}, {"from": "Jaime", "to": "Loras"}, {"from": "Jaime", "to": "Meryn"}, {"from": "Jaime", "to": "Qyburn"}, {"from": "Jaime", "to": "Renly"}, {"from": "Jaime", "to": "Robert"}, {"from": "Jaime", "to": "Stannis"}, {"from": "Jaime", "to": "Tommen"}, {"from": "Jaime", "to": "Tyrion"}, {"from": "Jaime", "to": "Robb"}, {"from": "Jaime", "to": "Sansa"}, {"from": "Jaime", "to": "Tywin"}, {"from": "Jaime", "to": "Walton"}, {"from": "Robert", "to": "Arya"}, {"from": "Robert", "to": "Cersei"}, {"from": "Robert", "to": "Daenerys"}, {"from": "Robert", "to": "Eddard"}, {"from": "Robert", "to": "Jon"}, {"from": "Robert", "to": "Jon Arryn"}, {"from": "Robert", "to": "Rhaegar"}, {"from": "Robert", "to": "Barristan"}, {"from": "Robert", "to": "Renly"}, {"from": "Robert", "to": "Stannis"}, {"from": "Robert", "to": "Thoros"}, {"from": "Robert", "to": "Sandor"}, {"from": "Robert", "to": "Sansa"}, {"from": "Robert", "to": "Tyrion"}, {"from": "Robert", "to": "Tywin"}, {"from": "Tyrion", "to": "Arya"}, {"from": "Tyrion", "to": "Catelyn"}, {"from": "Tyrion", "to": "Cersei"}, {"from": "Tyrion", "to": "Joffrey"}, {"from": "Tyrion", "to": "Lysa"}, {"from": "Tyrion", "to": "Myrcella"}, {"from": "Tyrion", "to": "Robb"}, {"from": "Tyrion", "to": "Sansa"}, {"from": "Tyrion", "to": "Balon"}, {"from": "Tyrion", "to": "Bronn"}, {"from": "Tyrion", "to": "Chataya"}, {"from": "Tyrion", "to": "Doran"}, {"from": "Tyrion", "to": "Elia"}, {"from": "Tyrion", "to": "Ellaria"}, {"from": "Tyrion", "to": "Gregor"}, {"from": "Tyrion", "to": "Ilyn"}, {"from": "Tyrion", "to": "Janos"}, {"from": "Tyrion", "to": "Kevan"}, {"from": "Tyrion", "to": "Loras"}, {"from": "Tyrion", "to": "Mace"}, {"from": "Tyrion", "to": "Margaery"}, {"from": "Tyrion", "to": "Meryn"}, {"from": "Tyrion", "to": "Oberyn"}, {"from": "Tyrion", "to": "Petyr"}, {"from": "Tyrion", "to": "Podrick"}, {"from": "Tyrion", "to": "Pycelle"}, {"from": "Tyrion", "to": "Renly"}, {"from": "Tyrion", "to": "Sandor"}, {"from": "Tyrion", "to": "Shae"}, {"from": "Tyrion", "to": "Stannis"}, {"from": "Tyrion", "to": "Varys"}, {"from": "Tyrion", "to": "Tywin"}, {"from": "Tyrion", "to": "Viserys"}, {"from": "Tywin", "to": "Lysa"}, {"from": "Tywin", "to": "Robb"}, {"from": "Tywin", "to": "Balon"}, {"from": "Tywin", "to": "Brynden"}, {"from": "Tywin", "to": "Cersei"}, {"from": "Tywin", "to": "Gregor"}, {"from": "Tywin", "to": "Joffrey"}, {"from": "Tywin", "to": "Kevan"}, {"from": "Tywin", "to": "Mace"}, {"from": "Tywin", "to": "Oberyn"}, {"from": "Tywin", "to": "Petyr"}, {"from": "Tywin", "to": "Podrick"}, {"from": "Tywin", "to": "Pycelle"}, {"from": "Tywin", "to": "Stannis"}, {"from": "Tywin", "to": "Tommen"}, {"from": "Tywin", "to": "Val"}, {"from": "Tywin", "to": "Varys"}, {"from": "Tywin", "to": "Walder"}, {"from": "Alliser", "to": "Mance"}, {"from": "Alliser", "to": "Janos"}, {"from": "Alliser", "to": "Jon"}, {"from": "Mance", "to": "Janos"}, {"from": "Mance", "to": "Jon"}, {"from": "Mance", "to": "Craster"}, {"from": "Mance", "to": "Dalla"}, {"from": "Mance", "to": "Gilly"}, {"from": "Mance", "to": "Qhorin"}, {"from": "Mance", "to": "Rattleshirt"}, {"from": "Mance", "to": "Styr"}, {"from": "Mance", "to": "Val"}, {"from": "Mance", "to": "Ygritte"}, {"from": "Amory", "to": "Oberyn"}, {"from": "Oberyn", "to": "Gregor"}, {"from": "Oberyn", "to": "Joffrey"}, {"from": "Oberyn", "to": "Ellaria"}, {"from": "Oberyn", "to": "Mace"}, {"from": "Arya", "to": "Anguy"}, {"from": "Arya", "to": "Beric"}, {"from": "Arya", "to": "Bran"}, {"from": "Arya", "to": "Brynden"}, {"from": "Arya", "to": "Cersei"}, {"from": "Arya", "to": "Gendry"}, {"from": "Arya", "to": "Gregor"}, {"from": "Arya", "to": "Joffrey"}, {"from": "Arya", "to": "Jon"}, {"from": "Arya", "to": "Rickon"}, {"from": "Arya", "to": "Roose"}, {"from": "Arya", "to": "Sandor"}, {"from": "Arya", "to": "Thoros"}, {"from": "Arya", "to": "Eddard"}, {"from": "Arya", "to": "Robb"}, {"from": "Arya", "to": "Sansa"}, {"from": "Anguy", "to": "Beric"}, {"from": "Beric", "to": "Gendry"}, {"from": "Beric", "to": "Thoros"}, {"from": "Beric", "to": "Eddard"}, {"from": "Beric", "to": "Sandor"}, {"from": "Bran", "to": "Hodor"}, {"from": "Bran", "to": "Jojen"}, {"from": "Bran", "to": "Jon"}, {"from": "Bran", "to": "Luwin"}, {"from": "Bran", "to": "Meera"}, {"from": "Bran", "to": "Nan"}, {"from": "Bran", "to": "Rickon"}, {"from": "Bran", "to": "Theon"}, {"from": "Bran", "to": "Catelyn"}, {"from": "Bran", "to": "Eddard"}, {"from": "Bran", "to": "Robb"}, {"from": "Bran", "to": "Sansa"}, {"from": "Brynden", "to": "Brynden"}, {"from": "Brynden", "to": "Lothar"}, {"from": "Brynden", "to": "Walder"}, {"from": "Brynden", "to": "Catelyn"}, {"from": "Brynden", "to": "Edmure"}, {"from": "Brynden", "to": "Rickard"}, {"from": "Brynden", "to": "Robb"}, {"from": "Cersei", "to": "Catelyn"}, {"from": "Cersei", "to": "Brienne"}, {"from": "Cersei", "to": "Bronn"}, {"from": "Cersei", "to": "Elia"}, {"from": "Cersei", "to": "Gregor"}, {"from": "Cersei", "to": "Ilyn"}, {"from": "Cersei", "to": "Joffrey"}, {"from": "Cersei", "to": "Meryn"}, {"from": "Cersei", "to": "Pycelle"}, {"from": "Cersei", "to": "Sandor"}, {"from": "Cersei", "to": "Shae"}, {"from": "Cersei", "to": "Varys"}, {"from": "Cersei", "to": "Eddard"}, {"from": "Cersei", "to": "Lysa"}, {"from": "Cersei", "to": "Sansa"}, {"from": "Gendry", "to": "Thoros"}, {"from": "Gendry", "to": "Sandor"}, {"from": "Gregor", "to": "Bronn"}, {"from": "Gregor", "to": "Elia"}, {"from": "Gregor", "to": "Ilyn"}, {"from": "Gregor", "to": "Meryn"}, {"from": "Gregor", "to": "Sandor"}, {"from": "Gregor", "to": "Joffrey"}, {"from": "Joffrey", "to": "Ilyn"}, {"from": "Joffrey", "to": "Kevan"}, {"from": "Joffrey", "to": "Loras"}, {"from": "Joffrey", "to": "Margaery"}, {"from": "Joffrey", "to": "Meryn"}, {"from": "Joffrey", "to": "Myrcella"}, {"from": "Joffrey", "to": "Sandor"}, {"from": "Joffrey", "to": "Stannis"}, {"from": "Joffrey", "to": "Tommen"}, {"from": "Joffrey", "to": "Robb"}, {"from": "Joffrey", "to": "Sansa"}, {"from": "Jon", "to": "Eddard"}, {"from": "Jon", "to": "Craster"}, {"from": "Jon", "to": "Dalla"}, {"from": "Jon", "to": "Eddison"}, {"from": "Jon", "to": "Gilly"}, {"from": "Jon", "to": "Janos"}, {"from": "Jon", "to": "Meera"}, {"from": "Jon", "to": "Melisandre"}, {"from": "Jon", "to": "Orell"}, {"from": "Jon", "to": "Qhorin"}, {"from": "Jon", "to": "Rattleshirt"}, {"from": "Jon", "to": "Stannis"}, {"from": "Jon", "to": "Styr"}, {"from": "Jon", "to": "Theon"}, {"from": "Jon", "to": "Val"}, {"from": "Jon", "to": "Ygritte"}, {"from": "Jon", "to": "Robb"}, {"from": "Jon", "to": "Sansa"}, {"from": "Rickon", "to": "Eddard"}, {"from": "Rickon", "to": "Theon"}, {"from": "Rickon", "to": "Robb"}, {"from": "Rickon", "to": "Sansa"}, {"from": "Roose", "to": "Catelyn"}, {"from": "Roose", "to": "Robb"}, {"from": "Roose", "to": "Brienne"}, {"from": "Sandor", "to": "Eddard"}, {"from": "Sandor", "to": "Ilyn"}, {"from": "Sandor", "to": "Meryn"}, {"from": "Sandor", "to": "Thoros"}, {"from": "Sandor", "to": "Sansa"}, {"from": "Balon", "to": "Loras"}, {"from": "Balon", "to": "Robb"}, {"from": "Balon", "to": "Stannis"}, {"from": "Loras", "to": "Brienne"}, {"from": "Loras", "to": "Margaery"}, {"from": "Loras", "to": "Olenna"}, {"from": "Loras", "to": "Renly"}, {"from": "Loras", "to": "Sansa"}, {"from": "Belwas", "to": "Barristan"}, {"from": "Belwas", "to": "Illyrio"}, {"from": "Belwas", "to": "Daenerys"}, {"from": "Belwas", "to": "Jorah"}, {"from": "Barristan", "to": "Daenerys"}, {"from": "Barristan", "to": "Jorah"}, {"from": "Barristan", "to": "Rhaegar"}, {"from": "Hodor", "to": "Jojen"}, {"from": "Hodor", "to": "Meera"}, {"from": "Hodor", "to": "Robb"}, {"from": "Jojen", "to": "Meera"}, {"from": "Luwin", "to": "Nan"}, {"from": "Theon", "to": "Robb"}, {"from": "Brienne", "to": "Catelyn"}, {"from": "Brienne", "to": "Robb"}, {"from": "Brienne", "to": "Sansa"}, {"from": "Bronn", "to": "Podrick"}, {"from": "Podrick", "to": "Margaery"}, {"from": "Podrick", "to": "Sansa"}, {"from": "Lothar", "to": "Edmure"}, {"from": "Lothar", "to": "Roslin"}, {"from": "Lothar", "to": "Robb"}, {"from": "Lothar", "to": "Walder"}, {"from": "Walder", "to": "Catelyn"}, {"from": "Walder", "to": "Edmure"}, {"from": "Walder", "to": "Robb"}, {"from": "Walder", "to": "Petyr"}, {"from": "Walder", "to": "Roslin"}, {"from": "Catelyn", "to": "Edmure"}, {"from": "Catelyn", "to": "Hoster"}, {"from": "Catelyn", "to": "Jeyne"}, {"from": "Catelyn", "to": "Lysa"}, {"from": "Catelyn", "to": "Petyr"}, {"from": "Catelyn", "to": "Robb"}, {"from": "Catelyn", "to": "Roslin"}, {"from": "Catelyn", "to": "Sansa"}, {"from": "Catelyn", "to": "Stannis"}, {"from": "Catelyn", "to": "Eddard"}, {"from": "Edmure", "to": "Roslin"}, {"from": "Edmure", "to": "Hoster"}, {"from": "Edmure", "to": "Robb"}, {"from": "Hoster", "to": "Lysa"}, {"from": "Jeyne", "to": "Robb"}, {"from": "Lysa", "to": "Jon Arryn"}, {"from": "Lysa", "to": "Marillion"}, {"from": "Lysa", "to": "Petyr"}, {"from": "Lysa", "to": "Robert Arryn"}, {"from": "Lysa", "to": "Sansa"}, {"from": "Petyr", "to": "Robb"}, {"from": "Petyr", "to": "Sansa"}, {"from": "Robb", "to": "Eddard"}, {"from": "Robb", "to": "Ramsay"}, {"from": "Robb", "to": "Rickard"}, {"from": "Robb", "to": "Sansa"}, {"from": "Robb", "to": "Stannis"}, {"from": "Sansa", "to": "Eddard"}, {"from": "Sansa", "to": "Kevan"}, {"from": "Sansa", "to": "Margaery"}, {"from": "Sansa", "to": "Marillion"}, {"from": "Sansa", "to": "Myrcella"}, {"from": "Sansa", "to": "Olenna"}, {"from": "Sansa", "to": "Renly"}, {"from": "Sansa", "to": "Robert Arryn"}, {"from": "Sansa", "to": "Shae"}, {"from": "Stannis", "to": "Davos"}, {"from": "Stannis", "to": "Melisandre"}, {"from": "Stannis", "to": "Renly"}, {"from": "Elia", "to": "Rhaegar"}, {"from": "Ilyn", "to": "Meryn"}, {"from": "Pycelle", "to": "Varys"}, {"from": "Shae", "to": "Chataya"}, {"from": "Shae", "to": "Varys"}, {"from": "Varys", "to": "Kevan"}, {"from": "Varys", "to": "Renly"}, {"from": "Craster", "to": "Karl"}, {"from": "Craster", "to": "Gilly"}, {"from": "Daario", "to": "Drogo"}, {"from": "Daario", "to": "Irri"}, {"from": "Daario", "to": "Daenerys"}, {"from": "Daario", "to": "Jorah"}, {"from": "Drogo", "to": "Daenerys"}, {"from": "Drogo", "to": "Irri"}, {"from": "Drogo", "to": "Jorah"}, {"from": "Irri", "to": "Daenerys"}, {"from": "Irri", "to": "Missandei"}, {"from": "Daenerys", "to": "Aegon"}, {"from": "Daenerys", "to": "Jorah"}, {"from": "Daenerys", "to": "Kraznys"}, {"from": "Daenerys", "to": "Missandei"}, {"from": "Daenerys", "to": "Rakharo"}, {"from": "Daenerys", "to": "Rhaegar"}, {"from": "Daenerys", "to": "Viserys"}, {"from": "Daenerys", "to": "Worm"}, {"from": "Jorah", "to": "Rhaegar"}, {"from": "Rhaegar", "to": "Viserys"}, {"from": "Davos", "to": "Cressen"}, {"from": "Davos", "to": "Salladhor"}, {"from": "Davos", "to": "Melisandre"}, {"from": "Davos", "to": "Shireen"}, {"from": "Renly", "to": "Margaery"}, {"from": "Tommen", "to": "Myrcella"}, {"from": "Tommen", "to": "Margaery"}, {"from": "Janos", "to": "Bowen"}, {"from": "Kevan", "to": "Lancel"}, {"from": "Dalla", "to": "Val"}, {"from": "Qhorin", "to": "Rattleshirt"}, {"from": "Qhorin", "to": "Ygritte"}, {"from": "Rattleshirt", "to": "Ygritte"}, {"from": "Marillion", "to": "Robert Arryn"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
