@@ -10,8 +10,8 @@ from metrics import plot_degree_distribution
 from metrics import local_clustering_coefficient
 from metrics import visualize_centrality_measures
 from metrics import calculate_assortativity
-from metrics import strongly_connected
-from metrics import weakly_connected
+#from metrics import strongly_connected
+#from metrics import weakly_connected
 
 
 
@@ -60,12 +60,12 @@ if st.sidebar.button("Coeficiente de Clustering Local"):
     st.write(local_clustering_coefficient(G))
 
 # Conectados Fortemente
-if st.sidebar.button("Conectados Fortemente"):
-    st.write(strongly_connected(G))
+#if st.sidebar.button("Conectados Fortemente"):
+    #st.write(strongly_connected(G))
 
 # Conectados Fracamente
-if st.sidebar.button("Conectados Fracamente"):
-    st.write(weakly_connected(G))
+#if st.sidebar.button("Conectados Fracamente"):
+    #st.write(weakly_connected(G))
 
 # Grafo com Medidas de Centralidade
 if st.sidebar.button("Grafo com Medidas de Centralidade"):
