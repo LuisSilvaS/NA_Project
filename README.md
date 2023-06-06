@@ -3,7 +3,7 @@
  ## Análise de redes em Game of Thrones.
 dataset: https://github.com/pupimvictor/NetworkOfThrones/blob/master/stormofswords.csv
 
-instals/run-terminal
+### instals/run-terminal
 - Python --Version 3.11.0
 
 1 - git clone https://github.com/LuisSilvaS/NA_Project
