@@ -9,7 +9,7 @@ def local_clustering_coefficient(G):
 def plot_clustering_coefficients(clustering_coeffs):
     nodes = list(clustering_coeffs.keys())
     coefficients = list(clustering_coeffs.values())
-
+    
     plt.figure(figsize=(10, 6))
     plt.bar(nodes, coefficients)
     plt.xlabel("Node")

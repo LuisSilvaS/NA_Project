@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from pyvis.network import Network
+import gzip
 import streamlit as st
 import plotly.graph_objects as go
 
@@ -35,7 +36,7 @@ def local_clustering_coefficient(G):
 
 def strongly_connected_graph(G):
     st.subheader("Componentes Conectados Fortemente")
-    strongly_connected = list(nx.connected_components(G.to_undirected()))
+    strongly_connected = list(nx.strongly_connected_components(G.to_undirected()))
 
     # Create a subgraph with strongly connected components
     subgraph_nodes = [node for component in strongly_connected for node in component]
@@ -54,9 +55,17 @@ def strongly_connected_graph(G):
     # Display the connected components
     st.write(strongly_connected)
 
+def strongly_connected(G):
+    st.subheader("Componentes Conectados Fortemente")
+    strongly_connected = list(nx.kosaraju_strongly_connected_components(G))
+    
+    # Display the connected components
+    for i, component in enumerate(strongly_connected):
+        st.write(f"Componente {i + 1}: {', '.join(component)}")
+
 def weakly_connected_graph(G):
     st.subheader("Componentes Conectados Fracamente")
-    weakly_connected = list(nx.connected_components(G))
+    weakly_connected = list(nx.weakly_connected_components(G))
 
     # Create a subgraph with weakly connected components
     subgraph_nodes = [node for component in weakly_connected for node in component]
@@ -75,8 +84,16 @@ def weakly_connected_graph(G):
     # Display the weakly connected components
     st.write(weakly_connected)
 
-def visualize_centrality_measures(G):
+def weakly_connected(G):
+    st.subheader("Componentes Conectados Fracamente")
+    weakly_connected = list(nx.weakly_connected_components(G.to_undirected()))
+    
+    # Display the connected components
+    for i, component in enumerate(weakly_connected):
+        st.write(f"Componente {i + 1}: {', '.join(component)}")
 
+def visualize_centrality_measures(G):
+    st.subheader("Medidas de Centralidade")
     # Calculate centrality measures
     degree_centrality = nx.degree_centrality(G)
     closeness_centrality = nx.closeness_centrality(G)
