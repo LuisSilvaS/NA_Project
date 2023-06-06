@@ -1,7 +1,7 @@
 # Projeto Final (IMD1155 - ANÁLISE DE REDES)
 
  ## Análise de redes em Game of Thrones.
-
+dataset: https://github.com/pupimvictor/NetworkOfThrones/blob/master/stormofswords.csv
 
 instals/run-terminal
 - Python --Version 3.11.0
