@@ -12,7 +12,6 @@ def generate_adjacency_matrix(G):
 
 def calculate_diameter(G):
     diameter = nx.diameter(G)
-    periphery = nx.periphery(G)
     return diameter
 
 def plot_degree_distribution(G):
@@ -29,10 +28,6 @@ def plot_degree_distribution(G):
         )
     )
     st.plotly_chart(fig)
-
-def local_clustering_coefficient(G):
-    clustering_coeffs = nx.clustering(G)
-    return clustering_coeffs
 
 def strongly_connected_graph(G):
     st.subheader("Componentes Conectados Fortemente")
@@ -92,19 +87,23 @@ def weakly_connected(G):
     for i, component in enumerate(weakly_connected):
         st.write(f"Componente {i + 1}: {', '.join(component)}")
 
-def visualize_centrality_measures(G):
+def visualize_measures(G):
     st.subheader("Medidas de Centralidade")
     # Calculate centrality measures
     degree_centrality = nx.degree_centrality(G)
     closeness_centrality = nx.closeness_centrality(G)
     betweenness_centrality = nx.betweenness_centrality(G)
     eigenvector_centrality = nx.eigenvector_centrality(G)
+    clustering_coefficient = nx.average_clustering(G)  # Coeficiente de clusterização global
+    clustering_coeffs = nx.clustering(G)  # Coeficiente de clusterização local
 
     # Add centrality measures as node attributes
     nx.set_node_attributes(G, degree_centrality, "degree_centrality")
     nx.set_node_attributes(G, closeness_centrality, "closeness_centrality")
     nx.set_node_attributes(G, betweenness_centrality, "betweenness_centrality")
     nx.set_node_attributes(G, eigenvector_centrality, "eigenvector_centrality")
+    nx.set_node_attributes(G, clustering_coefficient, "clustering_coefficient")  # Atributo de clusterização global
+    nx.set_node_attributes(G, clustering_coeffs, "clustering_coefficients")  # Atributo de clusterização local
 
     # Create a pyvis network
     nt = Network(notebook=True)
@@ -114,7 +113,9 @@ def visualize_centrality_measures(G):
         nt.add_node(node, title=f"Degree Centrality: {degree_centrality[node]}\n"
                               f"Closeness Centrality: {closeness_centrality[node]}\n"
                               f"Betweenness Centrality: {betweenness_centrality[node]}\n"
-                              f"Eigenvector Centrality: {eigenvector_centrality[node]}")
+                              f"Eigenvector Centrality: {eigenvector_centrality[node]}\n"
+                              f"Clustering Coefficient: {clustering_coefficient}\n"
+                              f"Local Clustering Coefficient: {clustering_coeffs[node]}")  # Mostra os coeficientes de clusterização global e local
 
     for edge in G.edges():
         nt.add_edge(edge[0], edge[1])

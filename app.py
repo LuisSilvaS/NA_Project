@@ -7,8 +7,7 @@ from pyvis.network import Network
 from metrics import generate_adjacency_matrix
 from metrics import calculate_diameter
 from metrics import plot_degree_distribution
-from metrics import local_clustering_coefficient
-from metrics import visualize_centrality_measures
+from metrics import visualize_measures
 from metrics import calculate_assortativity
 #from metrics import strongly_connected
 #from metrics import weakly_connected
@@ -45,19 +44,16 @@ st.sidebar.title("Métricas")
 
 # Matriz de adjacência
 if st.sidebar.button("Matriz de adjacência"):
+    st.write("Matriz de adjacência")
     st.write(generate_adjacency_matrix(G))
 
 # Diâmetro da Rede
 if st.sidebar.button("Diâmetro da Rede"):
-    st.write(calculate_diameter(G))
+    st.write(f'Diâmetro da rede: {calculate_diameter(G)}')
 
 # Histograma de Distribuição Empírica de Grau
 if st.sidebar.button("Histograma de Distribuição Empírica de Grau"):
     st.write(plot_degree_distribution(G))
-
-# Coeficiente de Clustering Local
-if st.sidebar.button("Coeficiente de Clustering Local"):
-    st.write(local_clustering_coefficient(G))
 
 # Conectados Fortemente
 #if st.sidebar.button("Conectados Fortemente"):
@@ -67,12 +63,16 @@ if st.sidebar.button("Coeficiente de Clustering Local"):
 #if st.sidebar.button("Conectados Fracamente"):
     #st.write(weakly_connected(G))
 
-# Grafo com Medidas de Centralidade
-if st.sidebar.button("Grafo com Medidas de Centralidade"):
-    st.write(visualize_centrality_measures(G))
+# Grafo com Medidas
+# visualization centrality measures
+if st.sidebar.button("Grafo com Medidas"):
+    st.write("Nesse Grafo é possivel visualizar para todos os nós: Degree centrality, Closeness centrality, Betweenness centrality, Eigenvector centrality e o Coeficiente de clustering Local e Global,")
+    st.write(visualize_measures(G))
 
 # Assortatividade Geral da Rede
 if st.sidebar.button("Assortatividade Geral da Rede"):
+    st.write("Assortatividade Geral da Rede")
     st.write(calculate_assortativity(G))
+
 
 st.write("By Luis Carlos Silva")
