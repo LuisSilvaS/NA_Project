@@ -1,11 +1,13 @@
-# NA_Project
+# Projeto Final (IMD1155 - ANÁLISE DE REDES)
 
-#Python Version 3.11.0
+ ## Análise de redes em Game of Thrones.
+dataset: https://github.com/pupimvictor/NetworkOfThrones/blob/master/stormofswords.csv
 
-instals-terminal
+### installs/run-terminal
+- Python --Version 3.11.0
 
-pip install -r requirements.txt
+1 - git clone https://github.com/LuisSilvaS/NA_Project
 
-run-terminal
+2 - pip install -r requirements.txt
 
-streamlit run app.py 
+3 - streamlit run app.py 
