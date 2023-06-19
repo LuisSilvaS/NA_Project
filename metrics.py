@@ -2,9 +2,10 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 from pyvis.network import Network
-import gzip
 import streamlit as st
 import plotly.graph_objects as go
+import seaborn as sns
+import gzip
 
 def generate_adjacency_matrix(G):
     adj_matrix = nx.to_numpy_array(G)
@@ -29,57 +30,7 @@ def plot_degree_distribution(G):
     )
     st.plotly_chart(fig)
 
-def strongly_connected_graph(G):
-    st.subheader("Componentes Conectados Fortemente")
-    strongly_connected = list(nx.strongly_connected_components(G.to_undirected()))
 
-    # Create a subgraph with strongly connected components
-    subgraph_nodes = [node for component in strongly_connected for node in component]
-    subgraph = G.subgraph(subgraph_nodes)
-
-    # Plot the subgraph
-    plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(subgraph)
-    nx.draw(subgraph, pos, with_labels=True, node_color='lightblue', edge_color='gray')
-    plt.title("Connected Components")
-    plt.axis('off')
-
-    # Display the graph
-    st.pyplot(plt.gcf())
-
-    # Display the connected components
-    st.write(strongly_connected)
-
-def strongly_connected(G):
-    st.subheader("Componentes Conectados Fortemente")
-    strongly_connected = list(nx.kosaraju_strongly_connected_components(G))
-    
-    # Display the connected components
-    for i, component in enumerate(strongly_connected):
-        st.write(f"Componente {i + 1}: {', '.join(component)}")
-
-def weakly_connected_graph(G):
-    st.subheader("Componentes Conectados Fracamente")
-    weakly_connected = list(nx.weakly_connected_components(G))
-
-    # Create a subgraph with weakly connected components
-    subgraph_nodes = [node for component in weakly_connected for node in component]
-    subgraph = G.subgraph(subgraph_nodes)
-
-    # Plot the subgraph
-    plt.figure(figsize=(8, 6))
-    pos = nx.spring_layout(subgraph)
-    nx.draw(subgraph, pos, with_labels=True, node_color='lightblue', edge_color='gray')
-    plt.title("Weakly Connected Components")
-    plt.axis('off')
-
-    # Display the graph
-    st.pyplot(plt.gcf())
-
-    # Display the weakly connected components
-    st.write(weakly_connected)
-
-def weakly_connected(G):
     st.subheader("Componentes Conectados Fracamente")
     weakly_connected = list(nx.weakly_connected_components(G.to_undirected()))
     
@@ -130,6 +81,142 @@ def visualize_measures(G):
     st.components.v1.html(html_content, height=500)
 
 def calculate_assortativity(G):
-    
     assortativity = nx.degree_assortativity_coefficient(G)
     st.write(assortativity)
+
+def measures_heatmap(G):
+    st.write("Selecione a medida de centralidade:")
+
+    centrality_measures = {
+        "Degree Centrality": nx.degree_centrality,
+        "Closeness Centrality": nx.closeness_centrality,
+        "Betweenness Centrality": nx.betweenness_centrality,
+        "Eigenvector Centrality": nx.eigenvector_centrality,
+        "Clustering Coefficient": nx.clustering
+    }
+
+    selected_measure = st.selectbox("Medida de Centralidade", list(centrality_measures.keys()))
+
+    # Calculate selected centrality measure
+    measure_function = centrality_measures[selected_measure]
+    centrality = measure_function(G)
+
+    # Create a list of centralities for each node
+    centralities = [centrality.get(node, 0) for node in G.nodes()]
+
+    # Create a colormap for the centralities
+    cmap = plt.cm.get_cmap("hot")
+    norm = plt.Normalize(vmin=min(centralities), vmax=max(centralities))
+
+    # Create a list of colors for each node based on centrality
+    node_colors = [cmap(norm(c)) for c in centralities]
+
+    # Diminuir a escala do grafo
+    pos = nx.random_layout(G)
+
+    # Ajustar parâmetros da figura e do plano de fundo
+    fig, ax = plt.subplots(figsize=(32, 28), dpi=150, facecolor='#D6EAF8')  # Define a cor azul clara como plano de fundo
+
+    node_sizes = [200, 300, 150]  # Lista de tamanhos dos nós
+
+    # Desenhar o grafo com as novas configurações
+    nx.draw_networkx(G, pos, node_color=node_colors, cmap=cmap, with_labels=True, ax=ax, font_weight='bold', font_color='blue', font_size=16)
+
+    # Function to handle mouse movement event
+    def hover(event):
+        if event.inaxes == ax:
+            for node in G.nodes():
+                x, y = pos[node]
+                if x - 0.05 <= event.xdata <= x + 0.05 and y - 0.05 <= event.ydata <= y + 0.05:
+                    ax.annotate(node, xy=(x, y), xytext=(5, 5), textcoords="offset points", fontsize=10, color="blue", fontweight="bold")
+                else:
+                    ax.annotate("", xy=(x, y), xytext=(5, 5), textcoords="offset points", fontsize=10, color="blue", fontweight="bold")
+
+            fig.canvas.draw_idle()
+
+    # Connect the hover function to the mouse movement event
+    fig.canvas.mpl_connect("motion_notify_event", hover)
+
+    # Create a colorbar for the centralities
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])  # An empty array is required for the colorbar to work
+    plt.colorbar(sm)
+    
+    # Mostrar o gráfico com a nova escala
+    plt.title(selected_measure)
+    plt.axis("off")
+    st.pyplot(fig)
+
+def calcular_componentes_fortemente_conectados(G, figsize=(28, 24), title=''):
+    # Verificar se o grafo é direcionado
+    if not nx.is_directed(G):
+        # Converter o grafo em um digrafo
+        G = nx.DiGraph(G)
+
+    # Calcula os componentes fortemente conectados
+    componentes = list(nx.strongly_connected_components(G))
+
+    # Mostra o número de componentes e os nós em cada componente
+    #st.write("Número de componentes fortemente conectados:", len(componentes))
+    for i, componente in enumerate(componentes):
+        #st.write(f"Componente {i+1}: {componente}")
+
+        # Cria um subgrafo apenas com os nós do componente atual
+        subgrafo = G.subgraph(componente)
+
+        # Calcula a posição dos nós
+        pos = nx.spring_layout(subgrafo)
+
+        # Cria a figura com o tamanho especificado
+        fig, ax = plt.subplots(figsize=figsize)
+
+        # Desenha o subgrafo sem rótulos nos nós
+        nx.draw(subgrafo, pos=pos, with_labels=False, ax=ax)
+
+        # Adiciona os rótulos ao lado dos nós
+        labels = {node: node for node in subgrafo.nodes}
+        nx.draw_networkx_labels(subgrafo, pos, labels=labels, font_color='black', ax=ax, font_weight='bold')
+
+        # Define o título do gráfico
+        ax.set_title(title)
+
+        # Exibe o gráfico no Streamlit
+        st.pyplot(fig)
+
+def calcular_componentes_fracamente_conectados(G, figsize=(28, 24), title=''):
+    # Verificar se o grafo é direcionado
+    if not nx.is_directed(G):
+        # Converter o grafo em um digrafo
+        G = nx.DiGraph(G)
+
+    # Calcula os componentes fracamente conectados
+    componentes = list(nx.weakly_connected_components(G))
+
+    # Mostra o número de componentes e os nós em cada componente
+    #st.write("Número de componentes fracamente conectados:", len(componentes))
+    for i, componente in enumerate(componentes):
+        #st.write(f"Componente {i+1}: {componente}")
+
+        # Cria um subgrafo apenas com os nós do componente atual
+        subgrafo = G.subgraph(componente)
+
+        # Calcula a posição dos nós
+        pos = nx.spring_layout(subgrafo)
+
+        # Cria a figura com o tamanho especificado
+        fig, ax = plt.subplots(figsize=figsize)
+
+        # Desenha o subgrafo sem rótulos nos nós
+        nx.draw(subgrafo, pos=pos, with_labels=False, ax=ax)
+
+        # Adiciona os rótulos ao lado dos nós
+        labels = {node: node for node in subgrafo.nodes}
+        nx.draw_networkx_labels(subgrafo, pos, labels=labels, font_color='black', ax=ax, font_weight='bold')
+
+        # Define o título do gráfico
+        ax.set_title(title)
+
+        # Exibe o gráfico no Streamlit
+        st.pyplot(fig)
+
+        
