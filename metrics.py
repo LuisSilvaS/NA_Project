@@ -30,14 +30,6 @@ def plot_degree_distribution(G):
     )
     st.plotly_chart(fig)
 
-
-    st.subheader("Componentes Conectados Fracamente")
-    weakly_connected = list(nx.weakly_connected_components(G.to_undirected()))
-    
-    # Display the connected components
-    for i, component in enumerate(weakly_connected):
-        st.write(f"Componente {i + 1}: {', '.join(component)}")
-
 def visualize_measures(G):
     st.subheader("Medidas de Centralidade")
     # Calculate centrality measures
